@@ -1,6 +1,5 @@
 console.log('All env vars:', import.meta.env);
 console.log("VITE_BACKEND_URL at runtime:", import.meta.env.VITE_BACKEND_URL);
-console.log("echo process.env.VITE_BACKEND_URL:", process.env.VITE_BACKEND_URL);
 import React, { useEffect, useRef, useState } from "react";
 import "./Chat.css";
 
