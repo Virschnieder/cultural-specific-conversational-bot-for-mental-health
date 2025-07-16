@@ -85,7 +85,7 @@ A culturally sensitive, voice-only mental health support chatbot for Omani Arabi
 
 ## Documentation & Context
 
-- For full technical details, system prompts, and architecture, see [CONTEXT.md](CONTEXT.md).
+- Here is the complete documentation of this application. 
 
 ## License
 
