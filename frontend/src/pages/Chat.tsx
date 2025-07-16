@@ -1,3 +1,4 @@
+console.log("VITE_BACKEND_URL at runtime:", import.meta.env.VITE_BACKEND_URL);
 import React, { useEffect, useRef, useState } from "react";
 import "./Chat.css";
 
