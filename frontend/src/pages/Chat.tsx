@@ -77,7 +77,6 @@ const Chat: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessage[]>(initialMessages);
   // Recording and transcription state
   const [isRecording, setIsRecording] = useState(false);
-  const [audioBlob, setAudioBlob] = useState<Blob | null>(null);
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [isLoadingReply, setIsLoadingReply] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -143,9 +142,88 @@ const Chat: React.FC = () => {
         }
       };
 
-      mediaRecorder.onstop = () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
-        setAudioBlob(audioBlob);
+      mediaRecorder.onstop = async () => {
+        // Only create audioBlob and upload if there is data
+        if (audioChunksRef.current.length > 0) {
+          const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
+
+          if (audioBlob.size > 0) {
+            try {
+              // 1. Transcribe audio
+              const formData = new FormData();
+              formData.append("audio", audioBlob, "audio/webm");
+
+              const response = await fetch(BACKEND_URL, {
+                method: "POST",
+                body: formData,
+              });
+
+              if (!response.ok) {
+                throw new Error("Transcription failed.");
+              }
+
+              const data = await response.json();
+              const userText =
+                (data.transcription && data.transcription.trim() !== "")
+                  ? data.transcription
+                  : "No transcription result.";
+
+              // 2. Add user message to chat
+              setMessages((prev) => [
+                ...prev,
+                { role: "user", content: userText },
+              ]);
+              setIsTranscribing(false);
+
+              // 3. Send chat history and user input to backend for OpenAI reply
+              setIsLoadingReply(true);
+              // Only send {role, content} to backend (strip out audio and other fields)
+              const chatHistory = [
+                ...messages
+                  .filter((msg) => msg.role !== "system")
+                  .map((msg) => ({ role: msg.role, content: msg.content })),
+                { role: "user", content: userText },
+              ];
+              const chatRes = await fetch(CHAT_URL, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                  history: chatHistory,
+                  user: userText,
+                }),
+              });
+
+              if (!chatRes.ok) {
+                throw new Error("Failed to get assistant response.");
+              }
+
+              const chatData = await chatRes.json();
+              const assistantText =
+                (chatData.reply && chatData.reply.trim() !== "")
+                  ? chatData.reply
+                  : "No assistant response.";
+              const audioBase64 = chatData.audio || "";
+
+              setMessages((prev) => [
+                ...prev,
+                {
+                  role: "assistant",
+                  content: assistantText,
+                  audio: audioBase64
+                    ? `data:audio/mp3;base64,${audioBase64}`
+                    : undefined,
+                },
+              ]);
+            } catch (err) {
+              setError("Transcription or assistant response failed. Please try again.");
+            } finally {
+              setIsLoadingReply(false);
+            }
+          } else {
+            setError("No audio data captured.");
+            setIsTranscribing(false);
+          }
+        }
       };
 
       mediaRecorder.start();
@@ -161,88 +239,6 @@ const Chat: React.FC = () => {
       setIsRecording(false);
       setIsTranscribing(true);
       setError(null);
-
-      mediaRecorderRef.current.onstop = async () => {
-        const audioBlob = new Blob(audioChunksRef.current, { type: "audio/webm" });
-        setAudioBlob(audioBlob);
-
-        if (audioBlob.size > 0) {
-          try {
-            // 1. Transcribe audio
-            const formData = new FormData();
-            formData.append("audio", audioBlob, "audio/webm");
-
-            const response = await fetch(BACKEND_URL, {
-              method: "POST",
-              body: formData,
-            });
-
-            if (!response.ok) {
-              throw new Error("Transcription failed.");
-            }
-
-            const data = await response.json();
-            const userText =
-              (data.transcription && data.transcription.trim() !== "")
-                ? data.transcription
-                : "No transcription result.";
-
-            // 2. Add user message to chat
-            setMessages((prev) => [
-              ...prev,
-              { role: "user", content: userText },
-            ]);
-            setIsTranscribing(false);
-
-            // 3. Send chat history and user input to backend for OpenAI reply
-            setIsLoadingReply(true);
-            // Only send {role, content} to backend (strip out audio and other fields)
-            const chatHistory = [
-              ...messages
-                .filter((msg) => msg.role !== "system")
-                .map((msg) => ({ role: msg.role, content: msg.content })),
-              { role: "user", content: userText },
-            ];
-            const chatRes = await fetch(CHAT_URL, {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify({
-                history: chatHistory,
-                user: userText,
-              }),
-            });
-
-            if (!chatRes.ok) {
-              throw new Error("Failed to get assistant response.");
-            }
-
-            const chatData = await chatRes.json();
-            const assistantText =
-              (chatData.reply && chatData.reply.trim() !== "")
-                ? chatData.reply
-                : "No assistant response.";
-            const audioBase64 = chatData.audio || "";
-
-            setMessages((prev) => [
-              ...prev,
-              {
-                role: "assistant",
-                content: assistantText,
-                audio: audioBase64
-                  ? `data:audio/mp3;base64,${audioBase64}`
-                  : undefined,
-              },
-            ]);
-          } catch (err) {
-            setError("Transcription or assistant response failed. Please try again.");
-          } finally {
-            setIsLoadingReply(false);
-          }
-        } else {
-          setError("No audio data captured.");
-          setIsTranscribing(false);
-        }
-      };
 
       mediaRecorderRef.current.stop();
     }
