@@ -1,0 +1,11 @@
+.particles-container {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 9999; /* For debugging, bring to front */
+  pointer-events: auto; /* For debugging, allow interaction */
+  opacity: 1; /* For debugging, set to 1 for maximum visibility */
+  background: rgba(255, 0, 0, 0.1); /* Temporary fallback background for debug */
+}

@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
+import "./Chat.css";
 
 const CONSENT_KEY = "omani-voicebot-consent";
 const BACKEND_URL = "http://localhost:5001/transcribe";
@@ -63,11 +64,7 @@ const ConsentModal: React.FC<{ onConsent: () => void }> = ({ onConsent }) => (
 const initialMessages: ChatMessage[] = [
   {
     role: "system",
-    content: "Peace be upon you. I'm your personal mental health assistant. Together, we'll conduct a confidential and safe assessment of your mental wellbeing.",
-  },
-  {
-    role: "system",
-    content: "Welcome to your confidential mental health assessment. I'm here to listen and understand your wellbeing. Your privacy is completely protected. How are you feeling today?",
+    content: "السلام عليكم ورحمة الله وبركاته - Peace be upon you. I'm your personal mental health assistant, here to provide culturally sensitive support. أنا هنا لأستمع إليك وأفهم مشاعرك (I'm here to listen and understand your feelings). Your privacy is completely protected and our conversation is confidential. كيف حالك اليوم؟ How are you feeling today?",
   },
 ];
 
@@ -89,6 +86,7 @@ const Chat: React.FC = () => {
   const audioChunksRef = useRef<Blob[]>([]);
   const chatEndRef = useRef<HTMLDivElement | null>(null);
   const audioRefs = useRef<(HTMLAudioElement | null)[]>([]);
+  const lastAutoPlayedIdx = useRef<number | null>(null);
 
   useEffect(() => {
     if (consentGiven) {
@@ -103,23 +101,31 @@ const Chat: React.FC = () => {
     }
   }, [messages]);
 
-  // Auto-play the latest assistant audio and pause others
+  // Auto-play ONLY the latest assistant audio when a new assistant message is added
   useEffect(() => {
     const lastAssistantIdx = messages
       .map((msg, idx) => (msg.role === "assistant" && msg.audio ? idx : -1))
       .filter((idx) => idx !== -1)
       .pop();
 
-    audioRefs.current.forEach((audio, idx) => {
-      if (audio) {
-        if (idx === lastAssistantIdx) {
-          audio.play().catch(() => {});
-        } else {
-          audio.pause();
-          audio.currentTime = 0;
+    if (
+      lastAssistantIdx !== undefined &&
+      lastAssistantIdx !== null &&
+      lastAssistantIdx !== lastAutoPlayedIdx.current
+    ) {
+      // Pause all other audios
+      audioRefs.current.forEach((audio, idx) => {
+        if (audio) {
+          if (idx === lastAssistantIdx) {
+            audio.play().catch(() => {});
+          } else {
+            audio.pause();
+            audio.currentTime = 0;
+          }
         }
-      }
-    });
+      });
+      lastAutoPlayedIdx.current = lastAssistantIdx;
+    }
   }, [messages]);
 
   // Start recording
@@ -164,7 +170,7 @@ const Chat: React.FC = () => {
           try {
             // 1. Transcribe audio
             const formData = new FormData();
-            formData.append("audio", audioBlob, "audio.webm");
+            formData.append("audio", audioBlob, "audio/webm");
 
             const response = await fetch(BACKEND_URL, {
               method: "POST",
@@ -190,8 +196,11 @@ const Chat: React.FC = () => {
 
             // 3. Send chat history and user input to backend for OpenAI reply
             setIsLoadingReply(true);
+            // Only send {role, content} to backend (strip out audio and other fields)
             const chatHistory = [
-              ...messages.filter((msg) => msg.role !== "system"),
+              ...messages
+                .filter((msg) => msg.role !== "system")
+                .map((msg) => ({ role: msg.role, content: msg.content })),
               { role: "user", content: userText },
             ];
             const chatRes = await fetch(CHAT_URL, {
@@ -240,94 +249,58 @@ const Chat: React.FC = () => {
   };
 
   return (
-    <div
-      className="chat-container"
-      style={{
-        width: "100vw",
-        minHeight: "100vh",
-        background: "#f9faf8",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "flex-start",
-        position: "relative",
-      }}
-    >
+    <div className="chat-bg">
       {!consentGiven && <ConsentModal onConsent={() => setConsentGiven(true)} />}
-      <div
-        style={{
-          width: "100%",
-          maxWidth: 700,
-          minHeight: "80vh",
-          background: "transparent",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "flex-end",
-          position: "relative",
-        }}
-      >
-        {/* Chat area */}
+      <div className="chat-main">
+        {/* Branding */}
         <div
           style={{
-            flex: 1,
-            overflowY: "auto",
-            paddingBottom: "2.5rem",
-            marginBottom: "1.5rem",
-            minHeight: 400,
-            maxHeight: "70vh",
+            display: "flex",
+            flexDirection: "row",
+            alignItems: "center",
+            background: "transparent",
+            borderRadius: "10px",
+            boxShadow: "none",
+            padding: "0.75rem 0.5rem",
+            minHeight: "unset",
+            marginBottom: "1.2rem",
+            maxWidth: 700,
+            marginLeft: "auto",
+            marginRight: "auto"
           }}
         >
+          <div style={{ display: "flex", flexDirection: "column", justifyContent: "center" }}>
+            <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.3rem" }}>
+              <span role="img" aria-label="dove" style={{ fontSize: "1.3rem", color: "#1a8c7a" }}>🕊️</span>
+              <span style={{ fontWeight: 700, fontSize: "1.1rem", color: "#1a8c7a", letterSpacing: "0.5px", fontFamily: "inherit" }}>
+                Mental Health Companion
+              </span>
+            </div>
+            <span style={{
+              fontSize: "0.92rem",
+              color: "#23443a",
+              fontWeight: 400,
+              lineHeight: 1.3,
+              fontFamily: "inherit"
+            }}>
+              Culturally Sensitive AI Support for Omani Arabic Speakers
+            </span>
+          </div>
+        </div>
+        {/* Chat area */}
+        <div className="chat-messages">
           {messages.map((msg, idx) => (
             <div
               key={idx}
-              style={{
-                display: "flex",
-                justifyContent:
-                  msg.role === "user"
-                    ? "flex-end"
-                    : msg.role === "assistant"
-                    ? "flex-start"
-                    : "flex-start",
-                marginBottom: 12,
-                alignItems: "flex-end",
-              }}
+              className={`chat-bubble-row ${msg.role}`}
             >
-              {msg.role === "system" && (
-                <div
-                  style={{
-                    width: 40,
-                    height: 40,
-                    borderRadius: "50%",
-                    background: "#b7d2c2",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    marginRight: 16,
-                    flexShrink: 0,
-                  }}
-                >
-                  <span role="img" aria-label="assistant" style={{ fontSize: 24 }}>
-                    💼
-                  </span>
+              {(msg.role === "system" || msg.role === "assistant") && (
+                <div className="chat-avatar">
+                  <span role="img" aria-label="assistant">🕊️</span>
                 </div>
               )}
               <div
-                style={{
-                  background:
-                    msg.role === "user"
-                      ? "#e0f7f4"
-                      : msg.role === "assistant"
-                      ? "#fffbe7"
-                      : "#fff",
-                  border: "1.5px solid #b7d2c2",
-                  borderRadius: 16,
-                  padding: "1rem 1.5rem",
-                  color: "#23443a",
-                  fontSize: "1.1rem",
-                  boxShadow: "0 2px 8px #e0eae6",
-                  maxWidth: "80%",
-                  textAlign: "left",
-                  position: "relative",
-                }}
+                className={`chat-bubble ${msg.role}`}
               >
                 {msg.content}
                 {msg.role === "assistant" && msg.audio && (
@@ -341,107 +314,82 @@ const Chat: React.FC = () => {
                   />
                 )}
               </div>
+              {msg.role === "user" && (
+                <div className="chat-avatar">
+                  <span role="img" aria-label="user">👤</span>
+                </div>
+              )}
             </div>
           ))}
           <div ref={chatEndRef} />
         </div>
         {/* Input area at the bottom */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            border: "1.5px solid #b7d2c2",
-            borderRadius: 12,
-            background: "#fff",
-            padding: "0.5rem 1rem",
-            gap: "0.5rem",
-            position: "sticky",
-            bottom: 0,
-            margin: "0 0 1.5rem 0",
-            boxShadow: "0 2px 8px #e0eae6",
-          }}
-        >
-          {/* Microphone button */}
-          <button
-            style={{
-              background: isRecording ? "#e74c3c" : "none",
-              border: "none",
-              color: isRecording ? "#fff" : "#1a8c7a",
-              fontSize: "1.5rem",
-              marginRight: "0.75rem",
-              cursor: "pointer",
-              position: "relative",
-            }}
-            disabled={!consentGiven || isRecording}
-            onClick={handleStartRecording}
-          >
-            <span role="img" aria-label="mic">
-              🎤
-            </span>
-            {isRecording && (
-              <span
-                style={{
-                  position: "absolute",
-                  top: -10,
-                  right: -10,
-                  width: 12,
-                  height: 12,
-                  borderRadius: "50%",
-                  background: "#e74c3c",
-                  animation: "blinker 1s linear infinite",
-                  boxShadow: "0 0 8px #e74c3c",
-                  display: "inline-block",
-                }}
-              />
-            )}
-          </button>
-          <style>
-            {`
-              @keyframes blinker {
-                50% { opacity: 0.2; }
-              }
-            `}
-          </style>
-          <input
-            type="text"
-            placeholder="Or write your own response..."
-            style={{
-              flex: 1,
-              border: "none",
-              outline: "none",
-              fontSize: "1rem",
-              color: "#23443a",
-              background: "transparent",
-            }}
-            disabled
-          />
-          {/* Send button */}
-          <button
-            style={{
-              background: isRecording ? "#1a8c7a" : "#b7d2c2",
-              border: "none",
-              borderRadius: "50%",
-              width: 40,
-              height: 40,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              color: "#fff",
-              fontSize: "1.25rem",
-              marginLeft: "0.75rem",
-              cursor: isRecording ? "pointer" : "not-allowed",
-              transition: "background 0.2s",
-            }}
-            disabled={!isRecording}
-            onClick={handleSend}
-          >
-            <span role="img" aria-label="send">
-              📤
-            </span>
-          </button>
+        {/* Input area at the bottom */}
+        <div className="chat-input-bar">
+          <div className="chat-input-inner">
+            {/* Microphone button */}
+            <button
+              className={`chat-mic-btn${isRecording ? " recording" : ""}`}
+              disabled={!consentGiven || isRecording}
+              onClick={handleStartRecording}
+            >
+              <span role="img" aria-label="mic">
+                🎤
+              </span>
+              {isRecording && (
+                <span
+                  style={{
+                    position: "absolute",
+                    top: -10,
+                    right: -10,
+                    width: 12,
+                    height: 12,
+                    borderRadius: "50%",
+                    background: "#e74c3c",
+                    animation: "blinker 1s linear infinite",
+                    boxShadow: "0 0 8px #e74c3c",
+                    display: "inline-block",
+                  }}
+                />
+              )}
+            </button>
+            <style>
+              {`
+                @keyframes blinker {
+                  50% { opacity: 0.2; }
+                }
+              `}
+            </style>
+            <input
+              type="text"
+              placeholder="Press on the mic to record..."
+              disabled
+            />
+            {/* Send button */}
+            <button
+              className={`chat-send-btn-rect${isRecording ? " active" : ""}`}
+              disabled={!isRecording}
+              onClick={handleSend}
+              style={{
+                marginLeft: "0.5rem",
+                padding: "0.32rem 1.1rem",
+                borderRadius: "7px",
+                border: "none",
+                fontWeight: 600,
+                fontSize: "0.98rem",
+                background: isRecording ? "#1a8c7a" : "#b7d2c2",
+                color: "#fff",
+                opacity: isRecording ? 1 : 0.6,
+                cursor: isRecording ? "pointer" : "not-allowed",
+                transition: "background 0.2s, opacity 0.2s"
+              }}
+            >
+              Send
+            </button>
+          </div>
         </div>
         {/* Recording/Transcription status */}
-        <div style={{ minHeight: 32, marginTop: 0 }}>
+        <div className="chat-status-bar">
           {isRecording && (
             <span style={{ color: "#e74c3c", fontWeight: 500 }}>
               <span style={{ marginRight: 8, fontSize: 18 }}>●</span>Recording...

@@ -5,10 +5,10 @@ A culturally sensitive, voice-only mental health support chatbot for Omani Arabi
 ## Features
 
 - Voice-only chat interface (React + TypeScript + Vite)
-- Real-time speech-to-text (Google STT)
-- Dual-model response generation (OpenAI GPT-4o, Claude Opus 4 fallback)
+- Real-time speech-to-text (Azure STT)
+- Dual-model response generation (OpenAI GPT-4o, GPT-4.1 fallback)
 - Culturally adapted, therapeutic-grade responses
-- Text-to-speech (Google TTS) with auto-play and replay controls
+- Text-to-speech (Azure TTS) with auto-play and replay controls
 - No database required—chat history is managed in the browser
 - Full compliance with privacy and safety protocols
 
@@ -16,7 +16,7 @@ A culturally sensitive, voice-only mental health support chatbot for Omani Arabi
 
 - **Frontend:** React, TypeScript, Vite
 - **Backend:** Node.js, Express, TypeScript
-- **APIs:** Google Speech-to-Text, Google Text-to-Speech, OpenAI GPT-4o
+- **APIs:** Azure Speech-to-Text, Azure Text-to-Speech, OpenAI GPT-4o, GPT-4.1 (validator)
 - **Other:** Multer (audio upload), dotenv (env management)
 
 ## Getting Started
@@ -30,7 +30,7 @@ A culturally sensitive, voice-only mental health support chatbot for Omani Arabi
 
 1. **Clone the repository:**
    ```bash
-   git clone https://github.com/yourusername/omani-therapist-voice.git
+   git clone https://github.com/Virschnieder/cultural-specific-conversational-bot-for-mental-health.git
    cd omani-therapist-voice
    ```
 
@@ -46,7 +46,8 @@ A culturally sensitive, voice-only mental health support chatbot for Omani Arabi
    - Copy `.env.example` to `.env` in both `backend/` and `frontend/` if provided.
    - For backend, set:
      ```
-     GOOGLE_APPLICATION_CREDENTIALS=/path/to/your/google-credentials.json
+     AZURE_SPEECH_KEY=your-azure-speech-key
+     AZURE_SPEECH_REGION=your-azure-region
      OPENAI_API_KEY=your-openai-api-key
      ```
 
@@ -72,7 +73,8 @@ A culturally sensitive, voice-only mental health support chatbot for Omani Arabi
 
 ## Environment Variables
 
-- `GOOGLE_APPLICATION_CREDENTIALS`: Path to your Google Cloud credentials JSON file.
+- `AZURE_SPEECH_KEY`: Your Azure Speech resource key.
+- `AZURE_SPEECH_REGION`: Your Azure Speech region (e.g., `uaenorth`).
 - `OPENAI_API_KEY`: Your OpenAI API key.
 
 ## Project Structure

@@ -29,3 +29,4 @@ backend/.env
 backend/.env.*
 backend/Keys/
 backend/CONTEXT.md
+backend/debug_audio.wav
