@@ -22,8 +22,7 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '20.x'
-      - name: Set install-ffmpeg.sh as executable
-        run: chmod +x backend/install-ffmpeg.sh && ./backend/install-ffmpeg.sh
+
 
       - name: npm install, build, and test (BACKEND)
         run: |
