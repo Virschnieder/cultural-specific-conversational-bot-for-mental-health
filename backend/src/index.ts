@@ -106,17 +106,18 @@ app.post("/transcribe", upload.single("audio"), async (req: express.Request, res
           res.json({ transcription: result.text });
         } else {
           console.error("[Azure STT] Recognition failed:", result);
-          res.status(500).json({ error: "Failed to transcribe audio." });
+          res.status(500).json({ error: "1. Failed to transcribe audio." , details: result || "Unknown error" });
         }
       },
       (err: any) => {
         console.error("[Azure STT] Error callback:", err);
-        res.status(500).json({ error: "Failed to transcribe audio." });
+        res.status(500).json({ error: "2. Failed to transcribe audio." , details: err.message || err});
+        
       }
     );
-  } catch (error) {
+  } catch (error : any) {
     console.error("[Azure STT] Catch block error:", error);
-    res.status(500).json({ error: "Failed to transcribe audio." });
+    res.status(500).json({ error: "3. Failed to transcribe audio." ,debugger: error.message || error});
   }
 });
 
@@ -324,7 +325,7 @@ PRIMARY RESPONSE: ${reply}
 RECENT CONTEXT: ${recentContext}
 `;
 
-    // Call validator model (GPT-4o-mini)
+    // Call validator model (GPT-4.1)
     let validatorResult: any = null;
     let validatorError = null;
     try {
