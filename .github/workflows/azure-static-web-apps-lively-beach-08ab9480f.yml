@@ -19,8 +19,6 @@ jobs:
         with:
           submodules: true
           lfs: false
-      - name: Set install-ffmpeg.sh as executable
-        run: chmod +x backend/install-ffmpeg.sh
 
       - name: Build And Deploy
         id: builddeploy
