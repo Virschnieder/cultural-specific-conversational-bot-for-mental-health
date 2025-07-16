@@ -2,8 +2,8 @@ import React, { useEffect, useRef, useState } from "react";
 import "./Chat.css";
 
 const CONSENT_KEY = "omani-voicebot-consent";
-const BACKEND_URL = "http://localhost:5001/transcribe";
-const CHAT_URL = "http://localhost:5001/chat";
+const BACKEND_URL = `${import.meta.env.VITE_BACKEND_URL}/transcribe`;
+const CHAT_URL = `${import.meta.env.VITE_BACKEND_URL}/chat`;
 
 type ChatMessage = {
   role: "system" | "user" | "assistant";
