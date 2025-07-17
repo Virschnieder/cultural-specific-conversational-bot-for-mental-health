@@ -62,7 +62,7 @@ A culturally sensitive, voice-only mental health support chatbot for Omani Arabi
    cd frontend
    npm run dev
    ```
-   - The app will be available at [http://localhost:5173](http://localhost:5173) (or another port if in use).
+   - The app will be available at [http://localhost:5173](http://localhost:5173) (or another port if in use). 
 
 ## Usage
 
@@ -85,8 +85,8 @@ A culturally sensitive, voice-only mental health support chatbot for Omani Arabi
 
 ## Documentation & Context
 
-- Here is the complete documentation of this application. Click on the google doc. 
-
+- Here is the complete documentation of this application visit the notion page : https://illustrious-tiglon-ff6.notion.site/Technical-Documentation-OMANI-Therapist-Voice-Backend-Implementation-2331f686ea6380e4b3cafb825ee099ad?source=copy_link
+and for the system architecture visit : https://illustrious-tiglon-ff6.notion.site/OMANI-Therapist-Voice-System-Design-Model-Integration-Documentatio-2331f686ea6380a185bae2009fc9fe11?source=copy_link
 ## License
 
 MIT
