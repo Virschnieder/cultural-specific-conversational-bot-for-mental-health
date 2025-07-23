@@ -115,6 +115,10 @@ LLM Service   Azure/Google STT, Azure TTS, etc.
    # Frontend (in frontend)
    npm run dev
    ```
+<<<<<<< HEAD
+=======
+   - The app will be available at [http://localhost:5173](http://localhost:5173) (or another port if in use). 
+>>>>>>> c6a885a04aae3284e9ceb0cb0fc072f77b019e92
 
 4. **Access the app at** [http://localhost:5173](http://localhost:5173)
 
@@ -140,11 +144,16 @@ LLM Service   Azure/Google STT, Azure TTS, etc.
 
 ## Deployment
 
+<<<<<<< HEAD
 - **Production deployment and Dockerization instructions will be added soon.**
 - For cloud deployment, set all environment variables in your CI/CD or cloud platform (never commit secrets).
 
 ---
 
+=======
+- Here is the complete documentation of this application visit the notion page : https://illustrious-tiglon-ff6.notion.site/Technical-Documentation-OMANI-Therapist-Voice-Backend-Implementation-2331f686ea6380e4b3cafb825ee099ad?source=copy_link
+and for the system architecture visit : https://illustrious-tiglon-ff6.notion.site/OMANI-Therapist-Voice-System-Design-Model-Integration-Documentatio-2331f686ea6380a185bae2009fc9fe11?source=copy_link
+>>>>>>> c6a885a04aae3284e9ceb0cb0fc072f77b019e92
 ## License
 
 MIT
