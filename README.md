@@ -1,94 +1,155 @@
-# Omani Arabic Mental Health Voice Chatbot
+# Culturally-Specific Conversational Bot for Mental Health
 
-A culturally sensitive, voice-only mental health support chatbot for Omani Arabic speakers. This web application provides therapeutic-grade, real-time conversational support using speech-to-text, GPT-4o, and text-to-speech technologies.
+## Project Overview
 
-## Features
+This project is a culturally sensitive mental health conversational assistant for Omani Arabic speakers. It is designed to provide therapeutic-grade support, with strict cultural and safety protocols, and is built with a modern, modular architecture:
 
-- Voice-only chat interface (React + TypeScript + Vite)
-- Real-time speech-to-text (Azure STT)
-- Dual-model response generation (OpenAI GPT-4o, GPT-4.1 fallback)
-- Culturally adapted, therapeutic-grade responses
-- Text-to-speech (Azure TTS) with auto-play and replay controls
-- No database required—chat history is managed in the browser
-- Full compliance with privacy and safety protocols
+- **Frontend:** React (Vite) SPA for user interaction.
+- **Backend:** Node.js/Express API for audio transcription, TTS, and orchestration.
+- **LLM Microservice:** Python FastAPI service using [LangChain](https://github.com/langchain-ai/langchain) for all LLM orchestration, safety validation, and cultural logic.
 
-## Tech Stack
+---
 
-- **Frontend:** React, TypeScript, Vite
-- **Backend:** Node.js, Express, TypeScript
-- **APIs:** Azure Speech-to-Text, Azure Text-to-Speech, OpenAI GPT-4o, GPT-4.1 (validator)
-- **Other:** Multer (audio upload), dotenv (env management)
+## Architecture
 
-## Getting Started
+```
+Frontend (Vite/React)
+    |
+    v
+Backend (Node.js/Express)
+    |         \
+    v          v
+LLM Service   Azure/Google STT, Azure TTS, etc.
+(Python/FastAPI + LangChain)
+```
 
-### Prerequisites
+- All LLM logic (prompting, safety, cultural validation) is handled in the Python microservice.
+- The backend handles audio, TTS, and relays chat requests to the LLM service.
+- All endpoints and secrets are managed via environment variables.
 
-- Node.js (v18+ recommended)
-- npm
+---
 
-### Setup
+## Environment Variable Setup
 
-1. **Clone the repository:**
+### 1. Frontend
+
+- `.env` (for local dev, **not committed**):
+  ```
+  VITE_BACKEND_URL=http://localhost:5001
+  ```
+- `.env.production` (for production build, **not committed**):
+  ```
+  VITE_BACKEND_URL=https://your-deployed-backend-url
+  ```
+- `.env.example` (template, **committed**):
+  ```
+  VITE_BACKEND_URL=http://localhost:5001
+  ```
+
+### 2. Backend
+
+- `.env` (for local dev, **not committed**):
+  ```
+  OPENAI_API_KEY=your-openai-api-key
+  AZURE_SPEECH_KEY=your-azure-speech-key
+  AZURE_SPEECH_REGION=your-azure-region
+  GOOGLE_APPLICATION_CREDENTIALS=path/to/your/google-credentials.json
+  LLM_SERVICE_URL=http://localhost:8000/llm-chat
+  ```
+- `.env.example` (template, **committed**):
+  ```
+  OPENAI_API_KEY=your-openai-api-key
+  AZURE_SPEECH_KEY=your-azure-speech-key
+  AZURE_SPEECH_REGION=your-azure-region
+  GOOGLE_APPLICATION_CREDENTIALS=path/to/your/google-credentials.json
+  LLM_SERVICE_URL=http://localhost:8000/llm-chat
+  ```
+
+### 3. LLM Microservice (llm_service)
+
+- `.env` (for local dev, **not committed**):
+  ```
+  OPENAI_API_KEY=your-openai-api-key
+  # SYSTEM_PROMPT=Optional custom system prompt
+  ```
+- `.env.example` (template, **committed**):
+  ```
+  OPENAI_API_KEY=your-openai-api-key
+  # SYSTEM_PROMPT=Optional custom system prompt
+  ```
+
+**Note:** Never commit `.env` or `.env.production` files with real secrets or URLs. Only commit `.env.example` as a template.
+
+---
+
+## Local Development
+
+1. **Clone the repo and install dependencies for each service:**
    ```bash
-   git clone https://github.com/Virschnieder/cultural-specific-conversational-bot-for-mental-health.git
-   cd omani-therapist-voice
-   ```
-
-2. **Install dependencies:**
-   ```bash
-   cd backend
-   npm install
-   cd ../frontend
-   npm install
-   ```
-
-3. **Set up environment variables:**
-   - Copy `.env.example` to `.env` in both `backend/` and `frontend/` if provided.
-   - For backend, set:
-     ```
-     AZURE_SPEECH_KEY=your-azure-speech-key
-     AZURE_SPEECH_REGION=your-azure-region
-     OPENAI_API_KEY=your-openai-api-key
-     ```
-
-4. **Run the backend:**
-   ```bash
-   cd backend
-   npm run dev
-   ```
-
-5. **Run the frontend:**
-   ```bash
+   # Frontend
    cd frontend
+   npm install
+
+   # Backend
+   cd ../backend
+   npm install
+
+   # LLM Service
+   cd ../llm_service
+   python3 -m venv venv
+   source venv/bin/activate
+   pip install -r requirements.txt
+   ```
+
+2. **Copy `.env.example` to `.env` in each service and fill in your local values.**
+
+3. **Run all services:**
+   ```bash
+   # LLM Service (in llm_service)
+   source venv/bin/activate
+   uvicorn llm_service:app --host 0.0.0.0 --port 8000
+
+   # Backend (in backend)
+   npm run dev
+
+   # Frontend (in frontend)
    npm run dev
    ```
-   - The app will be available at [http://localhost:5173](http://localhost:5173) (or another port if in use).
 
-## Usage
+4. **Access the app at** [http://localhost:5173](http://localhost:5173)
 
-- Click "Begin Assessment" to start a session.
-- Give consent to record audio.
-- Use the microphone to speak; your speech will be transcribed and sent to the AI.
-- The assistant's response will be shown as text and played as audio (with pause/replay controls).
+---
 
-## Environment Variables
+## Key Features & Technologies
 
-- `AZURE_SPEECH_KEY`: Your Azure Speech resource key.
-- `AZURE_SPEECH_REGION`: Your Azure Speech region (e.g., `uaenorth`).
-- `OPENAI_API_KEY`: Your OpenAI API key.
+- **LangChain (Python):** Modular LLM orchestration, prompt management, safety/cultural validation.
+- **OpenAI GPT-4o:** Main LLM for chat and safety validation.
+- **Azure/Google STT & Azure TTS:** Speech-to-text and text-to-speech for Omani Arabic.
+- **Strict environment variable management:** All secrets and URLs are externalized.
+- **Easy local development:** Just set up `.env` files and run each service.
 
-## Project Structure
+---
 
-- `frontend/`: React app (UI, chat logic)
-- `backend/`: Node.js/Express API (STT, TTS, OpenAI integration)
-- `Keys/`: (Not committed) Place your credentials here if needed.
+## Contributing
 
-## Documentation & Context
+- Fork the repo and clone locally.
+- Copy `.env.example` to `.env` in each service and set your own keys/URLs.
+- Submit PRs for improvements, bugfixes, or new features.
 
-- Here is the complete documentation of this application. Click on the google doc. 
+---
+
+## Deployment
+
+- **Production deployment and Dockerization instructions will be added soon.**
+- For cloud deployment, set all environment variables in your CI/CD or cloud platform (never commit secrets).
+
+---
 
 ## License
 
 MIT
 
 ---
+
+**Questions?**  
+Open an issue or discussion on GitHub!

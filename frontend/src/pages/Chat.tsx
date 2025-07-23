@@ -4,8 +4,8 @@ import React, { useEffect, useRef, useState } from "react";
 import "./Chat.css";
 
 const CONSENT_KEY = "omani-voicebot-consent";
-const BACKEND_URL = `https://omani-mental-health-bvgsffbacsf2hnbg.canadacentral-01.azurewebsites.net/transcribe`;
-const CHAT_URL = `https://omani-mental-health-bvgsffbacsf2hnbg.canadacentral-01.azurewebsites.net/chat`;
+const BACKEND_URL = `${import.meta.env.VITE_BACKEND_URL}/transcribe`;
+const CHAT_URL = `${import.meta.env.VITE_BACKEND_URL}/chat`;
 
 type ChatMessage = {
   role: "system" | "user" | "assistant";
