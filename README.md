@@ -1,90 +1,68 @@
 # Culturally-Specific Conversational Bot for Mental Health
 
-## Project Overview
+## Overview
 
-This project is a culturally sensitive mental health conversational assistant for Omani Arabic speakers. It is designed to provide therapeutic-grade support, with strict cultural and safety protocols, and is built with a modern, modular architecture:
-
-- **Frontend:** React (Vite) SPA for user interaction.
-- **Backend:** Node.js/Express API for audio transcription, TTS, and orchestration.
-- **LLM Microservice:** Python FastAPI service using [LangChain](https://github.com/langchain-ai/langchain) for all LLM orchestration, safety validation, and cultural logic.
+A culturally sensitive mental health conversational assistant for Omani Arabic speakers, providing therapeutic-grade support with strict cultural and safety protocols. The system is modular, scalable, and designed for easy local development and deployment.
 
 ---
 
 ## Architecture
 
 ```
-Frontend (Vite/React)
-    |
-    v
-Backend (Node.js/Express)
-    |         \
-    v          v
-LLM Service   Azure/Google STT, Azure TTS, etc.
-(Python/FastAPI + LangChain)
++-------------------+         +---------------------+         +-----------------------------+
+|    Frontend       |  <--->  |      Backend        |  <--->  |        LLM Service          |
+|  (React + Vite)   |  REST   | (Node.js/Express)  |  REST   | (Python/FastAPI + LangChain)|
++-------------------+         +---------------------+         +-----------------------------+
+        |                             |                                  |
+        |                             |                                  |
+        |                             v                                  v
+        |                  +-------------------+              +----------------------+
+        |                  |  Speech Services  |              |   OpenAI GPT-4o      |
+        |                  | (Azure/Google STT |              |   GPT-4-1106-preview |
+        |                  |  & Azure TTS)     |              |   (via LangChain)    |
+        |                  +-------------------+              +----------------------+
 ```
 
-- All LLM logic (prompting, safety, cultural validation) is handled in the Python microservice.
-- The backend handles audio, TTS, and relays chat requests to the LLM service.
-- All endpoints and secrets are managed via environment variables.
+### Component Roles
+
+- **Frontend (React + Vite):**  
+  Single-page application for user interaction. Handles chat UI, audio recording, and playback. Communicates with the backend via REST APIs.
+
+- **Backend (Node.js/Express):**  
+  Orchestrates the system. Handles API endpoints for chat, audio transcription (STT), text-to-speech (TTS), and relays chat requests to the LLM service. Manages integration with external speech services.
+
+- **LLM Service (Python/FastAPI + LangChain):**  
+  Handles all LLM logic, including prompt management, safety validation, and cultural adaptation. Uses OpenAI GPT-4o for main conversational intelligence and GPT-4-1106-preview for safety validation and crisis detection.
+
+- **External Services:**  
+  - **Azure/Google STT:** Speech-to-text for Omani Arabic.
+  - **Azure TTS:** Text-to-speech for Omani Arabic.
+  - **OpenAI GPT-4o & GPT-4-1106-preview:** Used for chat and safety validation.
+
+### Data Flow
+
+1. **User** interacts with the frontend (text or audio).
+2. **Frontend** sends user input to the backend.
+3. **Backend**:
+   - For audio: uses Azure/Google STT to transcribe.
+   - For chat: relays message to LLM service.
+4. **LLM Service** processes the message, applies safety/cultural validation, and generates a response.
+   - **Crisis Mechanism:** If a crisis is detected (e.g., suicide, self-harm, violence), the system immediately returns a culturally appropriate crisis message and flags the conversation.
+   - **Fallback Mechanism:** If the response needs modification for safety or cultural reasons, the system attempts to regenerate a safer, more appropriate reply.
+5. **Backend** (if needed) uses Azure TTS to convert LLM response to audio.
+6. **Frontend** displays text and/or plays audio response.
 
 ---
 
-## Environment Variable Setup
+## Setup
 
-### 1. Frontend
+1. **Clone the repository:**
+   ```bash
+   git clone https://github.com/Virschnieder/cultural-specific-conversational-bot-for-mental-health.git
+   cd cultural-specific-conversational-bot-for-mental-health
+   ```
 
-- `.env` (for local dev, **not committed**):
-  ```
-  VITE_BACKEND_URL=http://localhost:5001
-  ```
-- `.env.production` (for production build, **not committed**):
-  ```
-  VITE_BACKEND_URL=https://your-deployed-backend-url
-  ```
-- `.env.example` (template, **committed**):
-  ```
-  VITE_BACKEND_URL=http://localhost:5001
-  ```
-
-### 2. Backend
-
-- `.env` (for local dev, **not committed**):
-  ```
-  OPENAI_API_KEY=your-openai-api-key
-  AZURE_SPEECH_KEY=your-azure-speech-key
-  AZURE_SPEECH_REGION=your-azure-region
-  GOOGLE_APPLICATION_CREDENTIALS=path/to/your/google-credentials.json
-  LLM_SERVICE_URL=http://localhost:8000/llm-chat
-  ```
-- `.env.example` (template, **committed**):
-  ```
-  OPENAI_API_KEY=your-openai-api-key
-  AZURE_SPEECH_KEY=your-azure-speech-key
-  AZURE_SPEECH_REGION=your-azure-region
-  GOOGLE_APPLICATION_CREDENTIALS=path/to/your/google-credentials.json
-  LLM_SERVICE_URL=http://localhost:8000/llm-chat
-  ```
-
-### 3. LLM Microservice (llm_service)
-
-- `.env` (for local dev, **not committed**):
-  ```
-  OPENAI_API_KEY=your-openai-api-key
-  # SYSTEM_PROMPT=Optional custom system prompt
-  ```
-- `.env.example` (template, **committed**):
-  ```
-  OPENAI_API_KEY=your-openai-api-key
-  # SYSTEM_PROMPT=Optional custom system prompt
-  ```
-
-**Note:** Never commit `.env` or `.env.production` files with real secrets or URLs. Only commit `.env.example` as a template.
-
----
-
-## Local Development
-
-1. **Clone the repo and install dependencies for each service:**
+2. **Install dependencies for each service:**
    ```bash
    # Frontend
    cd frontend
@@ -101,33 +79,38 @@ LLM Service   Azure/Google STT, Azure TTS, etc.
    pip install -r requirements.txt
    ```
 
-2. **Copy `.env.example` to `.env` in each service and fill in your local values.**
+3. **Configuration:**
+   - Copy `.env.example` to `.env` in each service directory.
+   - Fill in your local values (API keys, URLs, etc.).
+   - **Never commit real secrets.** Only `.env.example` should be committed.
 
-3. **Run all services:**
-   ```bash
-   # LLM Service (in llm_service)
-   source venv/bin/activate
-   uvicorn llm_service:app --host 0.0.0.0 --port 8000
+---
 
-   # Backend (in backend)
-   npm run dev
+## Running Locally
 
-   # Frontend (in frontend)
-   npm run dev
-   ```
-<<<<<<< HEAD
-=======
-   - The app will be available at [http://localhost:5173](http://localhost:5173) (or another port if in use). 
->>>>>>> c6a885a04aae3284e9ceb0cb0fc072f77b019e92
+Start each service in its own terminal:
 
-4. **Access the app at** [http://localhost:5173](http://localhost:5173)
+```bash
+# LLM Service (in llm_service)
+source venv/bin/activate
+uvicorn llm_service:app --host 0.0.0.0 --port 8000
+
+# Backend (in backend)
+npm run dev
+
+# Frontend (in frontend)
+npm run dev
+```
+
+- The app will be available at [http://localhost:5173](http://localhost:5173) (or another port if in use).
 
 ---
 
 ## Key Features & Technologies
 
 - **LangChain (Python):** Modular LLM orchestration, prompt management, safety/cultural validation.
-- **OpenAI GPT-4o:** Main LLM for chat and safety validation.
+- **OpenAI GPT-4o & GPT-4-1106-preview:** Used for chat generation and safety validation, respectively.
+- **Crisis and Fallback Mechanisms:** Automatic detection of crisis situations (e.g., suicide, self-harm, violence) with immediate escalation and culturally appropriate messaging. If a response is unsafe or inappropriate, the system attempts to regenerate a safer reply.
 - **Azure/Google STT & Azure TTS:** Speech-to-text and text-to-speech for Omani Arabic.
 - **Strict environment variable management:** All secrets and URLs are externalized.
 - **Easy local development:** Just set up `.env` files and run each service.
@@ -142,21 +125,16 @@ LLM Service   Azure/Google STT, Azure TTS, etc.
 
 ---
 
-## Deployment
-
-<<<<<<< HEAD
-- **Production deployment and Dockerization instructions will be added soon.**
-- For cloud deployment, set all environment variables in your CI/CD or cloud platform (never commit secrets).
-
----
-
-=======
-- Here is the complete documentation of this application visit the notion page : https://illustrious-tiglon-ff6.notion.site/Technical-Documentation-OMANI-Therapist-Voice-Backend-Implementation-2331f686ea6380e4b3cafb825ee099ad?source=copy_link
-and for the system architecture visit : https://illustrious-tiglon-ff6.notion.site/OMANI-Therapist-Voice-System-Design-Model-Integration-Documentatio-2331f686ea6380a185bae2009fc9fe11?source=copy_link
->>>>>>> c6a885a04aae3284e9ceb0cb0fc072f77b019e92
 ## License
 
 MIT
+
+---
+
+## Further Documentation
+
+- [Technical Documentation (Notion)](https://illustrious-tiglon-ff6.notion.site/Technical-Documentation-OMANI-Therapist-Voice-Backend-Implementation-2331f686ea6380e4b3cafb825ee099ad?source=copy_link)
+- [System Architecture (Notion)](https://illustrious-tiglon-ff6.notion.site/OMANI-Therapist-Voice-System-Design-Model-Integration-Documentatio-2331f686ea6380a185bae2009fc9fe11?source=copy_link)
 
 ---
 
