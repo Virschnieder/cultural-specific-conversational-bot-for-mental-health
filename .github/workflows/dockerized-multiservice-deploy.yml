@@ -66,7 +66,7 @@ jobs:
         run: |
           az webapp config appsettings set \
             --name 'omani-mental-health' \
-            --resource-group $(az webapp show --name 'omani-mental-health' --query resourceGroup -o tsv) \
+            --resource-group first_time_here \
             --settings \
             LLM_SERVICE_URL="https://omani-mental-health-llm.azurewebsites.net/llm-chat" \
             AZURE_SPEECH_KEY="${{ secrets.AZURE_SPEECH_KEY }}" \
@@ -91,7 +91,7 @@ jobs:
         run: |
           az webapp config appsettings set \
             --name 'omani-mental-health-llm' \
-            --resource-group $(az webapp show --name 'omani-mental-health-llm' --query resourceGroup -o tsv) \
+            --resource-group first_time_here \
             --settings \
             OPENAI_API_KEY="${{ secrets.OPENAI_API_KEY }}"
 
