@@ -1,0 +1,426 @@
+.
+├── backend
+│   ├── debug_audio.wav
+│   ├── Dockerfile
+│   ├── install-ffmpeg.sh
+│   ├── node_modules
+│   │   ├── abort-controller
+│   │   ├── accepts
+│   │   ├── acorn
+│   │   ├── acorn-walk
+│   │   ├── agent-base
+│   │   ├── ansi-regex
+│   │   ├── ansi-styles
+│   │   ├── anymatch
+│   │   ├── append-field
+│   │   ├── arg
+│   │   ├── arrify
+│   │   ├── async
+│   │   ├── asynckit
+│   │   ├── balanced-match
+│   │   ├── base64-js
+│   │   ├── bent
+│   │   ├── bignumber.js
+│   │   ├── binary-extensions
+│   │   ├── body-parser
+│   │   ├── brace-expansion
+│   │   ├── braces
+│   │   ├── buffer-equal-constant-time
+│   │   ├── buffer-from
+│   │   ├── busboy
+│   │   ├── bytes
+│   │   ├── bytesish
+│   │   ├── call-bind-apply-helpers
+│   │   ├── call-bound
+│   │   ├── caseless
+│   │   ├── chokidar
+│   │   ├── cliui
+│   │   ├── color-convert
+│   │   ├── color-name
+│   │   ├── combined-stream
+│   │   ├── concat-map
+│   │   ├── concat-stream
+│   │   ├── content-disposition
+│   │   ├── content-type
+│   │   ├── cookie
+│   │   ├── cookie-signature
+│   │   ├── cors
+│   │   ├── create-require
+│   │   ├── @cspotcode
+│   │   ├── data-uri-to-buffer
+│   │   ├── debug
+│   │   ├── delayed-stream
+│   │   ├── depd
+│   │   ├── diff
+│   │   ├── dotenv
+│   │   ├── dunder-proto
+│   │   ├── duplexify
+│   │   ├── dynamic-dedupe
+│   │   ├── ecdsa-sig-formatter
+│   │   ├── ee-first
+│   │   ├── emoji-regex
+│   │   ├── encodeurl
+│   │   ├── end-of-stream
+│   │   ├── escalade
+│   │   ├── escape-html
+│   │   ├── es-define-property
+│   │   ├── es-errors
+│   │   ├── es-object-atoms
+│   │   ├── es-set-tostringtag
+│   │   ├── etag
+│   │   ├── event-target-shim
+│   │   ├── express
+│   │   ├── extend
+│   │   ├── fetch-blob
+│   │   ├── fill-range
+│   │   ├── finalhandler
+│   │   ├── fluent-ffmpeg
+│   │   ├── form-data
+│   │   ├── formdata-polyfill
+│   │   ├── forwarded
+│   │   ├── fresh
+│   │   ├── fs.realpath
+│   │   ├── function-bind
+│   │   ├── gaxios
+│   │   ├── gcp-metadata
+│   │   ├── get-caller-file
+│   │   ├── get-intrinsic
+│   │   ├── get-proto
+│   │   ├── glob
+│   │   ├── glob-parent
+│   │   ├── google-auth-library
+│   │   ├── @google-cloud
+│   │   ├── google-gax
+│   │   ├── google-logging-utils
+│   │   ├── gopd
+│   │   ├── @grpc
+│   │   ├── gtoken
+│   │   ├── hasown
+│   │   ├── has-symbols
+│   │   ├── has-tostringtag
+│   │   ├── html-entities
+│   │   ├── http-errors
+│   │   ├── http-proxy-agent
+│   │   ├── https-proxy-agent
+│   │   ├── iconv-lite
+│   │   ├── inflight
+│   │   ├── inherits
+│   │   ├── ipaddr.js
+│   │   ├── is-binary-path
+│   │   ├── is-core-module
+│   │   ├── isexe
+│   │   ├── is-extglob
+│   │   ├── is-fullwidth-code-point
+│   │   ├── is-glob
+│   │   ├── is-number
+│   │   ├── is-promise
+│   │   ├── is-stream
+│   │   ├── @jridgewell
+│   │   ├── json-bigint
+│   │   ├── @js-sdsl
+│   │   ├── jwa
+│   │   ├── jws
+│   │   ├── lodash.camelcase
+│   │   ├── long
+│   │   ├── make-error
+│   │   ├── math-intrinsics
+│   │   ├── media-typer
+│   │   ├── merge-descriptors
+│   │   ├── microsoft-cognitiveservices-speech-sdk
+│   │   ├── mime-db
+│   │   ├── mime-types
+│   │   ├── minimatch
+│   │   ├── minimist
+│   │   ├── mkdirp
+│   │   ├── ms
+│   │   ├── multer
+│   │   ├── negotiator
+│   │   ├── node-domexception
+│   │   ├── node-fetch
+│   │   ├── normalize-path
+│   │   ├── object-assign
+│   │   ├── object-hash
+│   │   ├── object-inspect
+│   │   ├── once
+│   │   ├── on-finished
+│   │   ├── openai
+│   │   ├── parseurl
+│   │   ├── path-is-absolute
+│   │   ├── path-parse
+│   │   ├── path-to-regexp
+│   │   ├── picomatch
+│   │   ├── proto3-json-serializer
+│   │   ├── @protobufjs
+│   │   ├── protobufjs
+│   │   ├── proxy-addr
+│   │   ├── pump
+│   │   ├── pumpify
+│   │   ├── qs
+│   │   ├── range-parser
+│   │   ├── raw-body
+│   │   ├── readable-stream
+│   │   ├── readdirp
+│   │   ├── require-directory
+│   │   ├── resolve
+│   │   ├── retry-request
+│   │   ├── rimraf
+│   │   ├── router
+│   │   ├── safe-buffer
+│   │   ├── safer-buffer
+│   │   ├── send
+│   │   ├── serve-static
+│   │   ├── setprototypeof
+│   │   ├── side-channel
+│   │   ├── side-channel-list
+│   │   ├── side-channel-map
+│   │   ├── side-channel-weakmap
+│   │   ├── source-map
+│   │   ├── source-map-support
+│   │   ├── statuses
+│   │   ├── stream-events
+│   │   ├── streamsearch
+│   │   ├── stream-shift
+│   │   ├── string_decoder
+│   │   ├── string-width
+│   │   ├── strip-ansi
+│   │   ├── strip-bom
+│   │   ├── strip-json-comments
+│   │   ├── stubs
+│   │   ├── supports-preserve-symlinks-flag
+│   │   ├── teeny-request
+│   │   ├── toidentifier
+│   │   ├── @tootallnate
+│   │   ├── to-regex-range
+│   │   ├── tree-kill
+│   │   ├── @tsconfig
+│   │   ├── tsconfig
+│   │   ├── ts-node
+│   │   ├── ts-node-dev
+│   │   ├── typedarray
+│   │   ├── type-is
+│   │   ├── @types
+│   │   ├── typescript
+│   │   ├── undici-types
+│   │   ├── unpipe
+│   │   ├── util-deprecate
+│   │   ├── uuid
+│   │   ├── v8-compile-cache-lib
+│   │   ├── vary
+│   │   ├── web-streams-polyfill
+│   │   ├── which
+│   │   ├── wrap-ansi
+│   │   ├── wrappy
+│   │   ├── ws
+│   │   ├── xtend
+│   │   ├── y18n
+│   │   ├── yargs
+│   │   ├── yargs-parser
+│   │   └── yn
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── src
+│   │   └── index.ts
+│   └── tsconfig.json
+├── CONTEXT.md
+├── docker-compose.yml
+├── frontend
+│   ├── dist
+│   │   ├── assets
+│   │   ├── index.html
+│   │   └── vite.svg
+│   ├── Dockerfile
+│   ├── eslint.config.js
+│   ├── index.html
+│   ├── node_modules
+│   │   ├── acorn
+│   │   ├── acorn-jsx
+│   │   ├── ajv
+│   │   ├── @ampproject
+│   │   ├── ansi-styles
+│   │   ├── argparse
+│   │   ├── @babel
+│   │   ├── balanced-match
+│   │   ├── brace-expansion
+│   │   ├── braces
+│   │   ├── browserslist
+│   │   ├── callsites
+│   │   ├── caniuse-lite
+│   │   ├── chalk
+│   │   ├── color-convert
+│   │   ├── color-name
+│   │   ├── concat-map
+│   │   ├── convert-source-map
+│   │   ├── cookie
+│   │   ├── cross-spawn
+│   │   ├── csstype
+│   │   ├── debug
+│   │   ├── deep-is
+│   │   ├── electron-to-chromium
+│   │   ├── @esbuild
+│   │   ├── esbuild
+│   │   ├── escalade
+│   │   ├── escape-string-regexp
+│   │   ├── @eslint
+│   │   ├── eslint
+│   │   ├── @eslint-community
+│   │   ├── eslint-plugin-react-hooks
+│   │   ├── eslint-plugin-react-refresh
+│   │   ├── eslint-scope
+│   │   ├── eslint-visitor-keys
+│   │   ├── espree
+│   │   ├── esquery
+│   │   ├── esrecurse
+│   │   ├── estraverse
+│   │   ├── esutils
+│   │   ├── fast-deep-equal
+│   │   ├── fast-glob
+│   │   ├── fast-json-stable-stringify
+│   │   ├── fast-levenshtein
+│   │   ├── fastq
+│   │   ├── file-entry-cache
+│   │   ├── fill-range
+│   │   ├── find-up
+│   │   ├── flat-cache
+│   │   ├── flatted
+│   │   ├── gensync
+│   │   ├── globals
+│   │   ├── glob-parent
+│   │   ├── graphemer
+│   │   ├── has-flag
+│   │   ├── @humanfs
+│   │   ├── @humanwhocodes
+│   │   ├── ignore
+│   │   ├── import-fresh
+│   │   ├── imurmurhash
+│   │   ├── isexe
+│   │   ├── is-extglob
+│   │   ├── is-glob
+│   │   ├── is-number
+│   │   ├── @jridgewell
+│   │   ├── jsesc
+│   │   ├── json5
+│   │   ├── json-buffer
+│   │   ├── json-schema-traverse
+│   │   ├── json-stable-stringify-without-jsonify
+│   │   ├── js-tokens
+│   │   ├── js-yaml
+│   │   ├── keyv
+│   │   ├── levn
+│   │   ├── locate-path
+│   │   ├── lodash.merge
+│   │   ├── lru-cache
+│   │   ├── merge2
+│   │   ├── micromatch
+│   │   ├── minimatch
+│   │   ├── ms
+│   │   ├── nanoid
+│   │   ├── natural-compare
+│   │   ├── @nodelib
+│   │   ├── node-releases
+│   │   ├── ogl
+│   │   ├── optionator
+│   │   ├── parent-module
+│   │   ├── path-exists
+│   │   ├── path-key
+│   │   ├── picocolors
+│   │   ├── picomatch
+│   │   ├── p-limit
+│   │   ├── p-locate
+│   │   ├── postcss
+│   │   ├── prelude-ls
+│   │   ├── punycode
+│   │   ├── queue-microtask
+│   │   ├── react
+│   │   ├── react-dom
+│   │   ├── react-refresh
+│   │   ├── react-router
+│   │   ├── react-router-dom
+│   │   ├── resolve-from
+│   │   ├── reusify
+│   │   ├── @rolldown
+│   │   ├── @rollup
+│   │   ├── rollup
+│   │   ├── run-parallel
+│   │   ├── scheduler
+│   │   ├── semver
+│   │   ├── set-cookie-parser
+│   │   ├── shebang-command
+│   │   ├── shebang-regex
+│   │   ├── source-map-js
+│   │   ├── strip-json-comments
+│   │   ├── supports-color
+│   │   ├── tinyglobby
+│   │   ├── to-regex-range
+│   │   ├── ts-api-utils
+│   │   ├── type-check
+│   │   ├── @types
+│   │   ├── typescript
+│   │   ├── @typescript-eslint
+│   │   ├── typescript-eslint
+│   │   ├── undici-types
+│   │   ├── update-browserslist-db
+│   │   ├── uri-js
+│   │   ├── vite
+│   │   ├── @vitejs
+│   │   ├── which
+│   │   ├── word-wrap
+│   │   ├── yallist
+│   │   └── yocto-queue
+│   ├── package.json
+│   ├── package-lock.json
+│   ├── public
+│   │   └── vite.svg
+│   ├── README.md
+│   ├── src
+│   │   ├── App.css
+│   │   ├── App.tsx
+│   │   ├── assets
+│   │   ├── components
+│   │   ├── index.css
+│   │   ├── main.tsx
+│   │   ├── pages
+│   │   └── vite-env.d.ts
+│   ├── tsconfig.app.json
+│   ├── tsconfig.json
+│   ├── tsconfig.node.json
+│   └── vite.config.ts
+├── Keys
+│   └── omani-therapist-voice-project-68e0fa3911cc.json
+├── llm_service
+│   ├── Dockerfile
+│   ├── llm_service_api_contract.md
+│   ├── llm_service.py
+│   ├── __pycache__
+│   │   └── llm_service.cpython-38.pyc
+│   ├── requirements.txt
+│   └── venv
+│       ├── bin
+│       ├── include
+│       ├── lib
+│       ├── lib64 -> lib
+│       ├── pyvenv.cfg
+│       └── share
+├── README.md
+├── test_env
+│   ├── bin
+│   │   ├── activate
+│   │   ├── activate.csh
+│   │   ├── activate.fish
+│   │   ├── Activate.ps1
+│   │   ├── easy_install
+│   │   ├── easy_install-3.8
+│   │   ├── pip
+│   │   ├── pip3
+│   │   ├── pip3.8
+│   │   ├── python -> python3
+│   │   └── python3 -> /usr/bin/python3
+│   ├── include
+│   ├── lib
+│   │   └── python3.8
+│   ├── lib64 -> lib
+│   ├── pyvenv.cfg
+│   └── share
+│       └── python-wheels
+└── tree.structure.txt
+
+375 directories, 48 files
