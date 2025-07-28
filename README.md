@@ -2,7 +2,7 @@
 
 ## Overview
 
-A culturally sensitive mental health conversational assistant for Omani Arabic speakers, providing therapeutic-grade support with strict cultural and safety protocols. The system is modular, scalable, and designed for easy local development and deployment.
+A culturally sensitive mental health conversational assistant for Omani Arabic speakers, providing therapeutic-grade support with strict cultural and safety protocols. The system is Dockerized for easy local development and cloud deployment.
 
 ---
 
@@ -23,7 +23,9 @@ A culturally sensitive mental health conversational assistant for Omani Arabic s
         |                  +-------------------+              +----------------------+
 ```
 
-### Component Roles
+---
+
+## Component Roles
 
 - **Frontend (React + Vite):**  
   Single-page application for user interaction. Handles chat UI, audio recording, and playback. Communicates with the backend via REST APIs.
@@ -32,14 +34,16 @@ A culturally sensitive mental health conversational assistant for Omani Arabic s
   Orchestrates the system. Handles API endpoints for chat, audio transcription (STT), text-to-speech (TTS), and relays chat requests to the LLM service. Manages integration with external speech services.
 
 - **LLM Service (Python/FastAPI + LangChain):**  
-  Handles all LLM logic, including prompt management, safety validation, and cultural adaptation. Uses OpenAI GPT-4o for main conversational intelligence and GPT-4-1106-preview for safety validation and crisis detection.
+  Handles all LLM logic, including prompt management, safety validation, and cultural adaptation. Uses OpenAI GPT-4o for main conversational intelligence and GPT-4-1106-preview for safety validation.
 
 - **External Services:**  
   - **Azure/Google STT:** Speech-to-text for Omani Arabic.
   - **Azure TTS:** Text-to-speech for Omani Arabic.
   - **OpenAI GPT-4o & GPT-4-1106-preview:** Used for chat and safety validation.
 
-### Data Flow
+---
+
+## Data Flow
 
 1. **User** interacts with the frontend (text or audio).
 2. **Frontend** sends user input to the backend.
@@ -54,7 +58,7 @@ A culturally sensitive mental health conversational assistant for Omani Arabic s
 
 ---
 
-## Setup
+## Local Development (Docker Compose)
 
 1. **Clone the repository:**
    ```bash
@@ -62,58 +66,63 @@ A culturally sensitive mental health conversational assistant for Omani Arabic s
    cd cultural-specific-conversational-bot-for-mental-health
    ```
 
-2. **Install dependencies for each service:**
-   ```bash
-   # Frontend
-   cd frontend
-   npm install
-
-   # Backend
-   cd ../backend
-   npm install
-
-   # LLM Service
-   cd ../llm_service
-   python3 -m venv venv
-   source venv/bin/activate
-   pip install -r requirements.txt
-   ```
-
-3. **Configuration:**
-   - Copy `.env.example` to `.env` in each service directory.
+2. **Set up environment variables:**
+   - Copy `.env.example` to `.env` in each of `backend/`, `frontend/`, and `llm_service/`.
    - Fill in your local values (API keys, URLs, etc.).
-   - **Never commit real secrets.** Only `.env.example` should be committed.
+
+3. **Start all services:**
+   ```bash
+   docker compose up --build
+   ```
+   - Frontend: [http://localhost:5173](http://localhost:5173)
+   - Backend: [http://localhost:5001](http://localhost:5001)
+   - LLM Service: [http://localhost:8000](http://localhost:8000)
+
+4. **Stop all services:**
+   ```bash
+   docker compose down
+   ```
 
 ---
 
-## Running Locally
+## Environment Variables
 
-Start each service in its own terminal:
+- **Frontend:**  
+  - `VITE_BACKEND_URL` (set to backend URL at build time)
+- **Backend:**  
+  - `LLM_SERVICE_URL` (URL to LLM service)
+  - `AZURE_SPEECH_KEY`, `AZURE_SPEECH_REGION`, etc.
+- **LLM Service:**  
+  - `OPENAI_API_KEY`
 
-```bash
-# LLM Service (in llm_service)
-source venv/bin/activate
-uvicorn llm_service:app --host 0.0.0.0 --port 8000
+**Note:**  
+- For local dev, use `localhost` URLs.
+- For production, the GitHub Actions workflow injects the correct Azure URLs at build time.
 
-# Backend (in backend)
-npm run dev
+---
 
-# Frontend (in frontend)
-npm run dev
-```
+## CI/CD & Azure Deployment
 
-- The app will be available at [http://localhost:5173](http://localhost:5173) (or another port if in use).
+- **Automated via GitHub Actions:**  
+  - See `.github/workflows/dockerized-multiservice-deploy.yml`
+  - Builds and pushes Docker images for each service to GitHub Container Registry.
+  - Deploys each service to its own Azure Web App for Containers.
+  - Sets environment variables in Azure using the Azure CLI.
+
+- **To deploy:**  
+  1. Push to the `main` branch.
+  2. The workflow will build, push, and deploy all services.
+  3. Environment variables are set automatically in Azure.
 
 ---
 
 ## Key Features & Technologies
 
 - **LangChain (Python):** Modular LLM orchestration, prompt management, safety/cultural validation.
-- **OpenAI GPT-4o & GPT-4-1106-preview:** Used for chat generation and safety validation, respectively.
-- **Crisis and Fallback Mechanisms:** Automatic detection of crisis situations (e.g., suicide, self-harm, violence) with immediate escalation and culturally appropriate messaging. If a response is unsafe or inappropriate, the system attempts to regenerate a safer reply.
+- **OpenAI GPT-4o & GPT-4-1106-preview:** Used for chat generation and safety validation.
 - **Azure/Google STT & Azure TTS:** Speech-to-text and text-to-speech for Omani Arabic.
 - **Strict environment variable management:** All secrets and URLs are externalized.
-- **Easy local development:** Just set up `.env` files and run each service.
+- **Easy local development and cloud deployment with Docker.**
 
 ---
 
