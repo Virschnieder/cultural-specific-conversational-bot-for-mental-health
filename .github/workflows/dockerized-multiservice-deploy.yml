@@ -8,9 +8,9 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_BACKEND: ghcr.io/${{ github.repository }}/backend
-  IMAGE_LLM: ghcr.io/${{ github.repository }}/llm_service
-  IMAGE_FRONTEND: ghcr.io/${{ github.repository }}/frontend
+  IMAGE_BACKEND: ghcr.io/virschnieder/cultural-specific-conversational-bot-for-mental-health/backend
+  IMAGE_LLM: ghcr.io/virschnieder/cultural-specific-conversational-bot-for-mental-health/llm_service
+  IMAGE_FRONTEND: ghcr.io/virschnieder/cultural-specific-conversational-bot-for-mental-health/frontend
 
 jobs:
   build-and-push:
