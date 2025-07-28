@@ -42,7 +42,7 @@ jobs:
       - name: Build and push frontend image
         run: |
           docker build \
-            --build-arg VITE_BACKEND_URL="omani-mental-health-bvgsffbacsf2hnbg.canadacentral-01.azurewebsites.net" \
+            --build-arg VITE_BACKEND_URL="https://omani-mental-health-bvgsffbacsf2hnbg.canadacentral-01.azurewebsites.net" \
             -t $IMAGE_FRONTEND:latest \
             ./frontend
           docker push $IMAGE_FRONTEND:latest
